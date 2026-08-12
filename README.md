@@ -1,0 +1,1 @@
+# magiceyes compatibility
