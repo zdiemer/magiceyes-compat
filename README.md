@@ -60,10 +60,10 @@ by how many games they hold up.
 
 Each title gets launched headlessly under the native engine, left alone for 25 seconds, and
 watched through the shared framebuffer. START and A get tapped a few times on the way through so
-the run has a chance of reaching a menu rather than sitting on a splash screen. Meanwhile the
-engine writes a structured report of everything it could not fully handle: syscalls it has no
-implementation for, symbols it failed to resolve, device nodes it does not model, hardware
-registers it ignored.
+the run has a chance of reaching a menu rather than sitting on a splash screen. A six second
+window is recorded frame by frame for the clip. Meanwhile the engine writes a structured report of
+everything it could not fully handle: syscalls it has no implementation for, symbols it failed to
+resolve, device nodes it does not model, hardware registers it ignored.
 
 The verdict comes from those two streams. Frame rate and frame count come off the framebuffer,
 the blocker lists come out of the report, and the screenshot is whichever captured frame scored
@@ -101,9 +101,14 @@ screen. When a title is flagged for a visual fault the screenshot switches to th
 looked worst, since that is the one worth seeing. Titles that never drew anything worth looking at
 have no screenshot at all.
 
-**The clips are time-lapses, not video.** Most issues lead with an animated GIF stitched from the
-frames the run captured, one every couple of seconds. It shows the shape of the run (boot, splash,
-menu, gameplay) rather than smooth motion, and titles whose screen never changed get no clip.
+**The clips are real motion.** Most issues lead with an animated GIF of six seconds of actual
+play, recorded at 15 fps from about eight seconds into the run, so you can see scrolling, sprites
+and animation rather than a slideshow. A few older entries fall back to a time-lapse stitched from
+the sampled frames. Titles whose screen never changed get no clip at all.
+
+Recording is a straight byte copy of the framebuffer, encoded to GIF afterwards, and a control run
+with and without it confirmed the frame rates do not move. The clip is a recording of the run, not
+a re-run, so it matches the numbers in the issue.
 
 **25 seconds is not a playthrough.** A title marked playable booted, ran, sounded correct and
 looked correct for as long as it was watched. Nobody finished it. Treat `playable` as "starts and
