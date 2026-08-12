@@ -97,7 +97,13 @@ is broken everywhere.
 
 **Screenshots are chosen by a script.** Usually you get a title screen or a menu. Sometimes you
 get whatever was on screen when the timer ran out, which for a game stuck mid-load is a loading
-screen. Titles that never drew anything worth looking at have no screenshot at all.
+screen. When a title is flagged for a visual fault the screenshot switches to the frame that
+looked worst, since that is the one worth seeing. Titles that never drew anything worth looking at
+have no screenshot at all.
+
+**The clips are time-lapses, not video.** Most issues lead with an animated GIF stitched from the
+frames the run captured, one every couple of seconds. It shows the shape of the run (boot, splash,
+menu, gameplay) rather than smooth motion, and titles whose screen never changed get no clip.
 
 **25 seconds is not a playthrough.** A title marked playable booted, ran, sounded correct and
 looked correct for as long as it was watched. Nobody finished it. Treat `playable` as "starts and
