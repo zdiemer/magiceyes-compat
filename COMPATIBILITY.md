@@ -41,6 +41,37 @@ One fix at the top of this table unblocks the whole row.
 | **Unimplemented syscall** (`unimplemented-syscall`) | 3 | Caanoo, GP2X | `281 (socket)` ×1, `113` ×1, `117` ×1 |
 | **Could not open a display** (`display-init-failed`) | 1 | GP2X | n/a |
 
+## Scored as working, but only painting a flat colour
+
+These 24 titles advanced frames, kept audio running, and held frame rate, so they land in `playable`/`renders`. Their framebuffer never held more than one or two colours, which means the tier overstates them. Worth treating as broken.
+
+| Title | Platform | Status | fps |
+|---|---|---|--:|
+| Balloonacy | Caanoo | `renders` | 0.1 |
+| Blitz | Caanoo | `renders` | 0.1 |
+| cat_trap | Caanoo | `renders` | 0.1 |
+| Drench | Caanoo | `renders` | 0.1 |
+| Geek_em_up_CAANOO | Caanoo | `renders` | 0.1 |
+| gnp_104 | Caanoo | `playable` | 53.9 |
+| knight | Caanoo | `renders` | 10.2 |
+| MNV_Caanoo_Release1 | Caanoo | `playable` | 40.1 |
+| noiz2sa_caanoo | Caanoo | `renders` | 16.8 |
+| rg_ura_103 | Caanoo | `playable` | 51.6 |
+| SantaMania | Caanoo | `renders` | 0.1 |
+| alex | GP2X | `renders` | 60.3 |
+| alex4_gp2x | GP2X | `renders` | 60.1 |
+| ASCIIPong2xV0.4 | GP2X | `playable` | 35.6 |
+| ConnyCarrot | GP2X | `playable` | 59.5 |
+| dumbbell2x-01 | GP2X | `renders` | 58.8 |
+| HumphreyGP2X | GP2X | `playable` | 58.2 |
+| kampfimall-gp2x | GP2X | `renders` | 59.9 |
+| kampfimall-gp2x-music | GP2X | `renders` | 60.8 |
+| Knight Lore | GP2X | `renders` | 10.5 |
+| las-tres-luces-de-glaurung-remake | GP2X | `playable` | 59.8 |
+| Pond2X | GP2X | `renders` | 59.6 |
+| robot-escape | GP2X | `playable` | 82.4 |
+| StairwayToHeaven | GP2X | `playable` | 59.3 |
+
 ## Cross-title blockers
 
 
