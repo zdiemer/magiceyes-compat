@@ -14,17 +14,21 @@ because they are firmware images, SDKs, or loose readmes rather than games.
 
 | Platform | Titles | Playable | Ingame | Black | Incompatible |
 |---|--:|--:|--:|--:|--:|
-| GP2X | 673 | 212 | 88 | 134 | 239 |
-| Wiz | 153 | 25 | 8 | 25 | 95 |
-| Caanoo | 205 | 15 | 27 | 15 | 148 |
-| **All** | **1,031** | **252** | **123** | **174** | **482** |
+| GP2X | 673 | 211 | 90 | 144 | 228 |
+| Wiz | 153 | 26 | 8 | 25 | 94 |
+| Caanoo | 205 | 16 | 25 | 16 | 148 |
+| **All** | **1,031** | **253** | **123** | **185** | **470** |
 
 So about a quarter run properly, and a bit over a third get far enough to put real gameplay on
 screen. Nothing crashed the engine, which is the one number worth being smug about.
 
-`playable` is stricter than "it ran". 39 titles clear every timing and audio check and still fail
-on the picture: 24 paint nothing but a flat colour, and 15 draw something visibly wrong. Those are
+`playable` is stricter than "it ran". 37 titles clear every timing and audio check and still fail
+on the picture: 28 paint nothing but a flat colour, and 9 draw something visibly wrong. Those are
 graded `ingame` instead, and the specific reason is in each issue.
+
+These counts move by a handful between sweeps. Titles near a threshold, and a few that are simply
+unstable, land on different sides on different days, so treat single-title verdicts as indicative
+rather than final.
 
 The biggest single lead is a register. 25 of the 27 titles that hang forever are sitting in a
 tight loop reading MMSP2 register `0x90a`, tens of millions of times a second, waiting for a value
