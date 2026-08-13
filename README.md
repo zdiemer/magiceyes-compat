@@ -9,33 +9,38 @@ stay about the emulator instead of disappearing under a thousand game reports.
 
 ## Where things stand
 
-1,031 titles booted headlessly on 13 August 2026. Another 60 entries on the share were skipped
+1,031 titles booted headlessly on 13 August 2026 (the second sweep that day — the first
+motivated the fixes, this one measures them). Another 60 entries on the share were skipped
 because they are firmware images, SDKs, or loose readmes rather than games.
 
 | Platform | Titles | Playable | Ingame | Black | Incompatible |
 |---|--:|--:|--:|--:|--:|
-| GP2X | 673 | 301 | 103 | 90 | 179 |
-| Wiz | 153 | 46 | 13 | 38 | 56 |
-| Caanoo | 205 | 57 | 38 | 24 | 86 |
-| **All** | **1,031** | **404** | **154** | **152** | **321** |
+| GP2X | 673 | 351 | 89 | 86 | 147 |
+| Wiz | 153 | 47 | 11 | 39 | 56 |
+| Caanoo | 205 | 59 | 38 | 22 | 86 |
+| **All** | **1,031** | **457** | **138** | **147** | **289** |
 
-So about two in five run properly, and a bit over half get far enough to put real gameplay on
-screen. Nothing crashed the engine, which is the one number worth being smug about.
+That is 457 titles running properly — up from 404 the day before, and 253 two days before that —
+and 595 putting real gameplay on screen. Nothing crashed the engine, which is the one number worth
+being smug about.
 
-`playable` is stricter than "it ran". 24 titles clear every timing and audio check and still fail
-on the picture: 16 paint nothing but a flat colour, and 8 draw something visibly wrong. Those are
+`playable` is stricter than "it ran". 23 titles clear every timing and audio check and still fail
+on the picture: 15 paint nothing but a flat colour, and 8 draw something visibly wrong. Those are
 graded `ingame` instead, and the specific reason is in each issue.
 
 These counts move by a handful between sweeps. Titles near a threshold, and a few that are simply
 unstable, land on different sides on different days, so treat single-title verdicts as indicative
 rather than final.
 
-The biggest bucket is now the black screens: 150 titles that keep running at full speed while
-drawing nothing we present. Two of its root causes fell on 13 August (games drawing to the GP2X's
-default scanout address through `/dev/mem`, and games stuck forever in an audio-buffer fill loop
-our OSS emulation never let terminate), which is much of why the incompatible column dropped by
-127 in one day. The earlier `0x90a` register lead turned out to be a red herring: the real wait
-was the LCD vsync line, fixed a day before.
+The biggest bucket is still the black screens: 147 titles that keep running at full speed while
+drawing nothing we present. Two more of its root causes fell on 13 August. The firmware's own
+`libpng.so.3` never declared its zlib dependency, so on a PC every PNG a game loaded through
+SDL_image silently came back empty — the game ran, the music played, and every draw call painted
+nothing. And GLBasic-built titles set the display flip register exactly once at boot, which told
+the emulator to present only on flips that never came again. Between them (plus a working F200
+touchscreen, `/dev/null`, and a handful of small syscalls) the register-polling group went from 25
+titles to 1 and dozens of black screens turned into playable games. The remaining 147 keep their
+secrets for now: none of them print an error, so each needs its own debugging session.
 
 ## How to read it
 
