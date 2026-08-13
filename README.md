@@ -9,22 +9,29 @@ stay about the emulator instead of disappearing under a thousand game reports.
 
 ## Where things stand
 
-1,031 titles booted headlessly on 13 August 2026 (the second sweep that day — the first
+1,031 titles booted headlessly on 13 August 2026 (the second sweep that day: the first
 motivated the fixes, this one measures them). Another 60 entries on the share were skipped
 because they are firmware images, SDKs, or loose readmes rather than games.
 
 | Platform | Titles | Playable | Ingame | Black | Incompatible |
 |---|--:|--:|--:|--:|--:|
-| GP2X | 673 | 351 | 89 | 86 | 147 |
-| Wiz | 153 | 47 | 11 | 39 | 56 |
-| Caanoo | 205 | 59 | 38 | 22 | 86 |
-| **All** | **1,031** | **457** | **138** | **147** | **289** |
+| GP2X | 673 | 424 | 16 | 86 | 147 |
+| Wiz | 153 | 57 | 1 | 39 | 56 |
+| Caanoo | 205 | 76 | 21 | 22 | 86 |
+| **All** | **1,031** | **557** | **38** | **147** | **289** |
 
-That is 457 titles running properly — up from 404 the day before, and 253 two days before that —
-and 595 putting real gameplay on screen. Nothing crashed the engine, which is the one number worth
-being smug about.
+That is 557 titles running properly and 595 putting real gameplay on screen (404 and 558 the day
+before; 253 two days before that). Nothing crashed the engine, which is the one number worth being
+smug about.
 
-`playable` is stricter than "it ran". 23 titles clear every timing and audio check and still fail
+Two grading changes landed with this sweep, both loosening in honest directions. Silence no longer
+costs the `playable` grade: plenty of titles simply have no audio, or none in the window watched,
+so a silent title that holds frame rate with a clean picture is playable and keeps a `no audio`
+label instead. And the frame-rate bar moved from 25 to 20 fps, which is still comfortably smooth
+for these handhelds. About a hundred titles moved from `ingame` to `playable` under the new
+criteria; the underlying measurements did not change.
+
+`playable` is stricter than "it ran". 23 titles clear every timing check and still fail
 on the picture: 15 paint nothing but a flat colour, and 8 draw something visibly wrong. Those are
 graded `ingame` instead, and the specific reason is in each issue.
 
@@ -35,7 +42,7 @@ rather than final.
 The biggest bucket is still the black screens: 147 titles that keep running at full speed while
 drawing nothing we present. Two more of its root causes fell on 13 August. The firmware's own
 `libpng.so.3` never declared its zlib dependency, so on a PC every PNG a game loaded through
-SDL_image silently came back empty — the game ran, the music played, and every draw call painted
+SDL_image silently came back empty: the game ran, the music played, and every draw call painted
 nothing. And GLBasic-built titles set the display flip register exactly once at boot, which told
 the emulator to present only on flips that never came again. Between them (plus a working F200
 touchscreen, `/dev/null`, and a handful of small syscalls) the register-polling group went from 25
@@ -49,8 +56,8 @@ Every issue is one title, and the labels are what make the pile useful.
 | Label | Meaning |
 |---|---|
 | `platform: GP2X` / `Wiz` / `Caanoo` | Which handheld it targets |
-| `status: playable` | Held 25 fps with sound, and the picture stood up to inspection |
-| `status: ingame` | Real gameplay on screen with a notable gap: slow, silent, flat, or wrong |
+| `status: playable` | Held 20 fps and the picture stood up to inspection (silence alone does not demote) |
+| `status: ingame` | Real gameplay on screen with a notable gap: slow, flat, or wrong |
 | `status: black` | Still running, but every frame sampled was black |
 | `status: incompatible` | Never drew anything, usually died in the loader |
 | `status: crashed` | Booted, then took the engine down with it |
@@ -91,7 +98,7 @@ Those checks are heuristics tuned against this corpus, deliberately set to flag 
 certain. They are for pointing a human at the right titles.
 
 Runs happen on ext4, never on a Windows mount. Going through drvfs costs around 20% of the frame
-rate, which is more than enough to shove a title across the 25 fps line and into the wrong bucket.
+rate, which is more than enough to shove a title across the 20 fps line and into the wrong bucket.
 
 ## Things worth knowing before you trust a result
 
