@@ -9,31 +9,33 @@ stay about the emulator instead of disappearing under a thousand game reports.
 
 ## Where things stand
 
-1,031 titles booted headlessly on 11 August 2026. Another 60 entries on the share were skipped
+1,031 titles booted headlessly on 13 August 2026. Another 60 entries on the share were skipped
 because they are firmware images, SDKs, or loose readmes rather than games.
 
 | Platform | Titles | Playable | Ingame | Black | Incompatible |
 |---|--:|--:|--:|--:|--:|
-| GP2X | 673 | 211 | 90 | 144 | 228 |
-| Wiz | 153 | 26 | 8 | 25 | 94 |
-| Caanoo | 205 | 16 | 25 | 16 | 148 |
-| **All** | **1,031** | **253** | **123** | **185** | **470** |
+| GP2X | 673 | 301 | 103 | 90 | 179 |
+| Wiz | 153 | 46 | 13 | 38 | 56 |
+| Caanoo | 205 | 57 | 38 | 24 | 86 |
+| **All** | **1,031** | **404** | **154** | **152** | **321** |
 
-So about a quarter run properly, and a bit over a third get far enough to put real gameplay on
+So about two in five run properly, and a bit over half get far enough to put real gameplay on
 screen. Nothing crashed the engine, which is the one number worth being smug about.
 
-`playable` is stricter than "it ran". 37 titles clear every timing and audio check and still fail
-on the picture: 28 paint nothing but a flat colour, and 9 draw something visibly wrong. Those are
+`playable` is stricter than "it ran". 24 titles clear every timing and audio check and still fail
+on the picture: 16 paint nothing but a flat colour, and 8 draw something visibly wrong. Those are
 graded `ingame` instead, and the specific reason is in each issue.
 
 These counts move by a handful between sweeps. Titles near a threshold, and a few that are simply
 unstable, land on different sides on different days, so treat single-title verdicts as indicative
 rather than final.
 
-The biggest single lead is a register. 25 of the 27 titles that hang forever are sitting in a
-tight loop reading MMSP2 register `0x90a`, tens of millions of times a second, waiting for a value
-that never changes. That same register comes up as unhandled in 409 titles overall. It looks like
-one fix with a very long tail.
+The biggest bucket is now the black screens: 150 titles that keep running at full speed while
+drawing nothing we present. Two of its root causes fell on 13 August (games drawing to the GP2X's
+default scanout address through `/dev/mem`, and games stuck forever in an audio-buffer fill loop
+our OSS emulation never let terminate), which is much of why the incompatible column dropped by
+127 in one day. The earlier `0x90a` register lead turned out to be a red herring: the real wait
+was the LCD vsync line, fixed a day before.
 
 ## How to read it
 
