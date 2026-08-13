@@ -9,45 +9,48 @@ stay about the emulator instead of disappearing under a thousand game reports.
 
 ## Where things stand
 
-1,031 titles booted headlessly on 13 August 2026 (the second sweep that day: the first
-motivated the fixes, this one measures them). Another 60 entries on the share were skipped
-because they are firmware images, SDKs, or loose readmes rather than games.
+972 titles booted headlessly on 13 August 2026, the third sweep that day: the first motivated the
+fixes, the second measured the morning's batch, and this one measures the afternoon's. The corpus
+itself shrank on paper, honestly: 59 folders on the share contain no executable at all (source
+dumps, skin packs, data-only add-ons), so with nothing to run they are no longer counted as
+titles. Their issues are closed. Another 60 entries were skipped as firmware images, SDKs, or
+loose readmes.
 
 | Platform | Titles | Playable | Ingame | Black | Incompatible |
 |---|--:|--:|--:|--:|--:|
-| GP2X | 673 | 424 | 16 | 86 | 147 |
-| Wiz | 153 | 57 | 1 | 39 | 56 |
-| Caanoo | 205 | 76 | 21 | 22 | 86 |
-| **All** | **1,031** | **557** | **38** | **147** | **289** |
+| GP2X | 631 | 439 | 18 | 86 | 88 |
+| Wiz | 147 | 75 | 3 | 42 | 27 |
+| Caanoo | 194 | 113 | 28 | 23 | 30 |
+| **All** | **972** | **627** | **49** | **151** | **145** |
 
-That is 557 titles running properly and 595 putting real gameplay on screen (404 and 558 the day
-before; 253 two days before that). Nothing crashed the engine, which is the one number worth being
-smug about.
+That is 627 titles running properly and 676 putting real gameplay on screen, out of 972 that can
+run at all: just shy of two thirds of the corpus is now playable. The afternoon's fixes moved 94
+titles up and none down. Nothing crashed the engine.
 
-Two grading changes landed with this sweep, both loosening in honest directions. Silence no longer
-costs the `playable` grade: plenty of titles simply have no audio, or none in the window watched,
-so a silent title that holds frame rate with a clean picture is playable and keeps a `no audio`
-label instead. And the frame-rate bar moved from 25 to 20 fps, which is still comfortably smooth
-for these handhelds. About a hundred titles moved from `ingame` to `playable` under the new
-criteria; the underlying measurements did not change.
+Three families fell at once. The launcher-script follower got rewritten: a `.gpe` on these
+handhelds is often a tiny shell script around the real binary, and the emulator was variously
+running the wrong program from it (a display utility that prints "usage:" and exits), passing
+shell syntax through as game arguments, or starting the game from the wrong directory. Getting
+that right turned around fifty entries previously dismissed as "not an ARM executable" into
+running games. The Wiz gcc-runtime cluster fell next: a dozen titles built with a newer community
+toolchain than the firmware's libraries could satisfy now resolve against the newer runtime those
+same titles ship. And the whole BennuGD engine family (thirty-plus indie titles across Wiz and
+Caanoo) came alive at once when the SDL shim gained the one event-queue export their shared
+runtime refuses to start without.
 
-`playable` is stricter than "it ran". 23 titles clear every timing check and still fail
-on the picture: 15 paint nothing but a flat colour, and 8 draw something visibly wrong. Those are
-graded `ingame` instead, and the specific reason is in each issue.
+`playable` is stricter than "it ran". 29 titles clear every timing check and still fail on the
+picture: 17 paint nothing but a flat colour, and 12 draw something visibly wrong, including a new
+class that renders at the wrong resolution outright. Those are graded `ingame` instead, and the
+specific reason is in each issue.
 
 These counts move by a handful between sweeps. Titles near a threshold, and a few that are simply
 unstable, land on different sides on different days, so treat single-title verdicts as indicative
 rather than final.
 
-The biggest bucket is still the black screens: 147 titles that keep running at full speed while
-drawing nothing we present. Two more of its root causes fell on 13 August. The firmware's own
-`libpng.so.3` never declared its zlib dependency, so on a PC every PNG a game loaded through
-SDL_image silently came back empty: the game ran, the music played, and every draw call painted
-nothing. And GLBasic-built titles set the display flip register exactly once at boot, which told
-the emulator to present only on flips that never came again. Between them (plus a working F200
-touchscreen, `/dev/null`, and a handful of small syscalls) the register-polling group went from 25
-titles to 1 and dozens of black screens turned into playable games. The remaining 147 keep their
-secrets for now: none of them print an error, so each needs its own debugging session.
+The biggest bucket is still the black screens: 151 titles that keep running at full speed while
+drawing nothing we present. Its membership keeps churning as loader deaths get further and slide
+in, which is progress wearing a discouraging costume. None of them print an error, so each needs
+its own debugging session.
 
 ## How to read it
 
@@ -103,10 +106,10 @@ rate, which is more than enough to shove a title across the 20 fps line and into
 ## Things worth knowing before you trust a result
 
 **A failing issue is not automatically our bug.** A good number of entries on the share are patch
-archives, level packs, or partial dumps. 59 have no executable in them at all, and another 106 are
-engine ports that start up and then quit because the original game's data files were never there.
-Those are `group: no-executable` and `group: missing-game-data`, and there is nothing on the
-emulator side to fix.
+archives, level packs, or partial dumps. The 59 with no executable at all are no longer graded
+(their issues are closed: nothing to run means nothing to mark playable or unplayable), and the
+engine ports that start up and then quit because the original game's data files were never there
+carry `group: missing-game-data`. There is nothing on the emulator side to fix in either pile.
 
 **Two copies of the same game are not the same game.** Payback is the clearest case. The build on
 the share sits on its loading screen forever, while a different build of the same game runs at
