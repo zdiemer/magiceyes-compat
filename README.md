@@ -9,48 +9,54 @@ stay about the emulator instead of disappearing under a thousand game reports.
 
 ## Where things stand
 
-972 titles booted headlessly on 13 August 2026, the third sweep that day: the first motivated the
-fixes, the second measured the morning's batch, and this one measures the afternoon's. The corpus
-itself shrank on paper, honestly: 59 folders on the share contain no executable at all (source
-dumps, skin packs, data-only add-ons), so with nothing to run they are no longer counted as
-titles. Their issues are closed. Another 60 entries were skipped as firmware images, SDKs, or
-loose readmes.
+972 titles booted headlessly on 13 August 2026, the fourth sweep that day, this one measuring
+the evening's engine fixes. The corpus accounting is unchanged: 59 folders on the share contain
+no executable at all (source dumps, skin packs, data-only add-ons), so with nothing to run they
+are not counted as titles and their issues stay closed. Another 60 entries were skipped as
+firmware images, SDKs, or loose readmes.
 
-| Platform | Titles | Playable | Ingame | Black | Incompatible |
-|---|--:|--:|--:|--:|--:|
-| GP2X | 631 | 439 | 18 | 86 | 88 |
-| Wiz | 147 | 75 | 3 | 42 | 27 |
-| Caanoo | 194 | 113 | 28 | 23 | 30 |
-| **All** | **972** | **627** | **49** | **151** | **145** |
+| Platform | Titles | Playable | Ingame | Black | Incompatible | Crashed |
+|---|--:|--:|--:|--:|--:|--:|
+| GP2X | 631 | 459 | 24 | 59 | 88 | 1 |
+| Wiz | 147 | 94 | 0 | 38 | 15 | 0 |
+| Caanoo | 194 | 99 | 48 | 19 | 28 | 0 |
+| **All** | **972** | **652** | **72** | **116** | **131** | **1** |
 
-That is 627 titles running properly and 676 putting real gameplay on screen, out of 972 that can
-run at all: just shy of two thirds of the corpus is now playable. The afternoon's fixes moved 94
-titles up and none down. Nothing crashed the engine.
+That is 652 titles running properly and 724 putting real gameplay on screen, out of 972 that can
+run at all: just over two thirds of the corpus is now playable. This sweep moved 60 titles up and
+32 down, and most of the downs are honesty rather than regressions: 27 are Fenix/BennuGD engine
+titles that used to free-run because the emulator never advanced the hardware timer they pace by.
+Now that the timer ticks they run at their real (currently too slow) speed and grade `ingame`
+instead of `playable`. The remaining drops spot-checked as parallel-load flakes and render fine
+when run alone.
 
-Three families fell at once. The launcher-script follower got rewritten: a `.gpe` on these
-handhelds is often a tiny shell script around the real binary, and the emulator was variously
-running the wrong program from it (a display utility that prints "usage:" and exits), passing
-shell syntax through as game arguments, or starting the game from the wrong directory. Getting
-that right turned around fifty entries previously dismissed as "not an ARM executable" into
-running games. The Wiz gcc-runtime cluster fell next: a dozen titles built with a newer community
-toolchain than the firmware's libraries could satisfy now resolve against the newer runtime those
-same titles ship. And the whole BennuGD engine family (thirty-plus indie titles across Wiz and
-Caanoo) came alive at once when the SDL shim gained the one event-queue export their shared
-runtime refuses to start without.
+The biggest single fix was one line of loader behaviour: anonymous fixed mappings now zero the
+range they cover, the way Linux does. The dynamic linker maps every library's zero-initialised
+data that way, so before the fix each unstripped library started life with garbage where it
+expected zeroes. That one change revived the whole five-title Toaplan arcade family, SuperTux and
+OpenJazz on the Wiz, and cleared a wrongly-blamed C++ runtime. Library search order now prefers
+the game's own directory first, matching the real firmware, so ports that ship their own SDL
+stacks get them wholesale. On the Wiz/Caanoo side, palette capture and portrait un-rotation fixed
+the 8-bit and rotated-scanout titles, and fatal guest messages that used to vanish now land in
+the log.
 
-`playable` is stricter than "it ran". 29 titles clear every timing check and still fail on the
-picture: 17 paint nothing but a flat colour, and 12 draw something visibly wrong, including a new
-class that renders at the wrong resolution outright. Those are graded `ingame` instead, and the
-specific reason is in each issue.
+One title crashed the engine this sweep: chicken-puyopuyo, whose error path host-faulted after a
+missing `libSDL_gfx.so.13`. The library is staged now and the title plays, but the sweep's
+verdict stands, and the silent host fault is tracked as an engine-robustness bug.
+
+`playable` is stricter than "it ran". 26 titles clear every timing check and still fail on the
+picture: 18 paint nothing but a flat colour, and 8 draw something visibly wrong. Those are graded
+`ingame` instead, and the specific reason is in each issue.
 
 These counts move by a handful between sweeps. Titles near a threshold, and a few that are simply
 unstable, land on different sides on different days, so treat single-title verdicts as indicative
 rather than final.
 
-The biggest bucket is still the black screens: 151 titles that keep running at full speed while
-drawing nothing we present. Its membership keeps churning as loader deaths get further and slide
-in, which is progress wearing a discouraging costume. None of them print an error, so each needs
-its own debugging session.
+The biggest bucket is still the black screens: 116 titles that keep running at full speed while
+drawing nothing we present, 35 fewer than last sweep. Its membership keeps churning as loader
+deaths get further and slide in, which is progress wearing a discouraging costume. Now that fatal
+guest messages reach the log, some of them finally name their killer; the rest still need their
+own debugging session.
 
 ## How to read it
 
@@ -154,7 +160,9 @@ python3 tools/test/compat_publish.py --manifest tools/test/compat_manifest.json 
         --repo-dir <clone of this repo> --summary COMPATIBILITY.md --push
 python3 tools/test/compat_issues.py  --manifest tools/test/compat_manifest.json \
         --repo zdiemer/magiceyes-compat \
-        --shots-base-url https://github.com/zdiemer/magiceyes-compat/blob/main/shots
+        --shots-base-url https://github.com/zdiemer/magiceyes-compat/blob/main/shots \
+        --clips-base-url https://github.com/zdiemer/magiceyes-compat/blob/main/clips \
+        --clips-dir <clone of this repo>/clips
 ```
 
 Issues carry a hidden marker keyed to the title, so a second run edits what is already here rather
