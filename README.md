@@ -9,54 +9,55 @@ stay about the emulator instead of disappearing under a thousand game reports.
 
 ## Where things stand
 
-972 titles booted headlessly on 13 August 2026, the fourth sweep that day, this one measuring
-the evening's engine fixes. The corpus accounting is unchanged: 59 folders on the share contain
-no executable at all (source dumps, skin packs, data-only add-ons), so with nothing to run they
-are not counted as titles and their issues stay closed. Another 60 entries were skipped as
-firmware images, SDKs, or loose readmes.
+972 titles booted headlessly on 14 August 2026 (the fifth full sweep), and on 24 August a
+targeted pass re-verified 20 more titles fixed since then, updating their issues in place. The
+corpus accounting is unchanged: 59 folders on the share contain no executable at all (source
+dumps, skin packs, data-only add-ons), so with nothing to run they are not counted as titles and
+their issues stay closed. Another 60 entries were skipped as firmware images, SDKs, or loose
+readmes.
 
 | Platform | Titles | Playable | Ingame | Black | Incompatible | Crashed |
 |---|--:|--:|--:|--:|--:|--:|
-| GP2X | 631 | 459 | 24 | 59 | 88 | 1 |
-| Wiz | 147 | 94 | 0 | 38 | 15 | 0 |
-| Caanoo | 194 | 99 | 48 | 19 | 28 | 0 |
-| **All** | **972** | **652** | **72** | **116** | **131** | **1** |
+| GP2X | 631 | 481 | 18 | 42 | 90 | 0 |
+| Wiz | 147 | 116 | 2 | 14 | 15 | 0 |
+| Caanoo | 194 | 109 | 49 | 10 | 26 | 0 |
+| **All** | **972** | **706** | **69** | **66** | **131** | **0** |
 
-That is 652 titles running properly and 724 putting real gameplay on screen, out of 972 that can
-run at all: just over two thirds of the corpus is now playable. This sweep moved 60 titles up and
-32 down, and most of the downs are honesty rather than regressions: 27 are Fenix/BennuGD engine
-titles that used to free-run because the emulator never advanced the hardware timer they pace by.
-Now that the timer ticks they run at their real (currently too slow) speed and grade `ingame`
-instead of `playable`. The remaining drops spot-checked as parallel-load flakes and render fine
-when run alone.
+That is 706 titles running properly and 775 putting real gameplay on screen, out of 972 that can
+run at all: nearly three quarters of the corpus is now playable, and nothing crashes the engine.
 
-The biggest single fix was one line of loader behaviour: anonymous fixed mappings now zero the
-range they cover, the way Linux does. The dynamic linker maps every library's zero-initialised
-data that way, so before the fix each unstripped library started life with garbage where it
-expected zeroes. That one change revived the whole five-title Toaplan arcade family, SuperTux and
-OpenJazz on the Wiz, and cleared a wrongly-blamed C++ runtime. Library search order now prefers
-the game's own directory first, matching the real firmware, so ports that ship their own SDL
-stacks get them wholesale. On the Wiz/Caanoo side, palette capture and portrait un-rotation fixed
-the 8-bit and rotated-scanout titles, and fatal guest messages that used to vanish now land in
-the log.
+The recent work went after the black screens, and four root causes fell. A present-path
+starvation: the Wiz firmware SDL pans once at start-up, the engine locked its display to that
+page, and GLBasic games then drew every frame into the other page forever (full-speed game, music
+playing, black screen). A library gap: static GP2X binaries load the firmware's `libpng` at
+runtime, that library never declared its zlib dependency, and the usual preload workaround cannot
+reach a static binary's loader, so every PNG in those games silently failed to decode. A
+touchscreen model that only reported changes, when the real hardware free-runs and certain games
+wait for any sample at all before leaving their loading screen. And repeat framebuffer mappings
+that each got their own private memory, so a game drawing through its second mapping was painting
+somewhere the display never read: that one, plus implementing the Wiz's portrait-mode ioctl,
+revived the whole Wiz GLBasic family at once, several of them straight to fully playable with
+working menus and gameplay. Touch input now flows end to end as well, verified all the way into a
+game's own internal mouse state.
 
-One title crashed the engine this sweep: chicken-puyopuyo, whose error path host-faulted after a
-missing `libSDL_gfx.so.13`. The library is staged now and the title plays, but the sweep's
-verdict stands, and the silent host fault is tracked as an engine-robustness bug.
+The 24 August pass flipped those 20 issues (14 Wiz, 5 GP2X, 1 Caanoo) from `black` to `playable`
+with fresh screenshots and clips; the table above includes them. A handful of siblings that also
+render now still carry `black`, honestly: their newly-working menus respond to the sweep's
+scripted button taps, and one of those taps exits them mid-run. They will re-grade once the sweep
+script is gentler.
 
-`playable` is stricter than "it ran". 26 titles clear every timing check and still fail on the
-picture: 18 paint nothing but a flat colour, and 8 draw something visibly wrong. Those are graded
+`playable` is stricter than "it ran". 28 titles clear every timing check and still fail on the
+picture: 17 paint nothing but a flat colour, and 11 draw something visibly wrong. Those are graded
 `ingame` instead, and the specific reason is in each issue.
 
 These counts move by a handful between sweeps. Titles near a threshold, and a few that are simply
 unstable, land on different sides on different days, so treat single-title verdicts as indicative
 rather than final.
 
-The biggest bucket is still the black screens: 116 titles that keep running at full speed while
-drawing nothing we present, 35 fewer than last sweep. Its membership keeps churning as loader
-deaths get further and slide in, which is progress wearing a discouraging costume. Now that fatal
-guest messages reach the log, some of them finally name their killer; the rest still need their
-own debugging session.
+The black-screen bucket, long the biggest, is down to 66 titles that keep running at full speed
+while drawing nothing we present: half of what it was two sweeps ago. The biggest bucket now is
+quieter: 107 titles that render at full speed but never produce audio, which does not cost them
+their grade but is the next thing worth a debugging session.
 
 ## How to read it
 
