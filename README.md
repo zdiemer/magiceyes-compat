@@ -1,4 +1,4 @@
-# magiceyes compatibility
+﻿# magiceyes compatibility
 
 GP2X, Wiz, and Caanoo compatibility with [magiceyes](https://github.com/zdiemer/magiceyes).
 Each title gets its own automatically generated GitHub issue detailing its inferred compatibility
@@ -11,10 +11,10 @@ of games' real playability.
 
 | Platform | Titles | Playable | Ingame | Black | Incompatible | Crashed |
 |---|--:|--:|--:|--:|--:|--:|
-| GP2X | 631 | 490 | 16 | 35 | 90 | 0 |
-| Wiz | 147 | 118 | 0 | 14 | 15 | 0 |
-| Caanoo | 194 | 116 | 45 | 7 | 26 | 0 |
-| **All** | **972** | **724** | **61** | **56** | **131** | **0** |
+| GP2X | 631 | 491 | 16 | 34 | 90 | 0 |
+| Wiz | 147 | 119 | 0 | 13 | 15 | 0 |
+| Caanoo | 194 | 117 | 45 | 6 | 26 | 0 |
+| **All** | **972** | **727** | **61** | **53** | **131** | **0** |
 
 ## How to read it
 
