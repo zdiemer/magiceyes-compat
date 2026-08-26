@@ -4,17 +4,17 @@ GP2X, Wiz, and Caanoo compatibility with [magiceyes](https://github.com/zdiemer/
 Each title gets its own automatically generated GitHub issue detailing its inferred compatibility
 based on a scoring system along with a screenshot and video if the game or application produced any
 output. A playable rating is not a guarantee that the game will play, but it does indicate that the
-emulator properly boots it and the game appears to render frames. Future passes will automate testing
-of games' real playability.
+emulator properly boots it and the game appears to render frames. Input is driven automatically now,
+so each issue also records how many buttons the title answered and how many screens it reached.
 
 ## Current Status
 
 | Platform | Titles | Playable | Ingame | Black | Incompatible | Crashed |
 |---|--:|--:|--:|--:|--:|--:|
-| GP2X | 631 | 505 | 7 | 33 | 86 | 0 |
-| Wiz | 147 | 118 | 2 | 14 | 13 | 0 |
-| Caanoo | 194 | 113 | 47 | 7 | 27 | 0 |
-| **All** | **972** | **736** | **56** | **54** | **126** | **0** |
+| GP2X | 631 | 503 | 8 | 33 | 87 | 0 |
+| Wiz | 147 | 117 | 3 | 14 | 13 | 0 |
+| Caanoo | 194 | 119 | 44 | 5 | 26 | 0 |
+| **All** | **972** | **739** | **55** | **52** | **126** | **0** |
 
 ## How to read it
 
@@ -33,12 +33,14 @@ of games' real playability.
 
 ## Methodology
 
-Each title gets launched headlessly under the native engine, left alone for 25 seconds, and
-watched through the shared framebuffer. START and A get tapped a few times on the way through so
-the run has a chance of reaching a menu rather than sitting on a splash screen. A six second
-window is recorded frame by frame for the clip. Meanwhile the engine writes a structured report of
-everything it could not fully handle: syscalls it has no implementation for, symbols it failed to
-resolve, device nodes it does not model, hardware registers it ignored.
+Each title gets launched headlessly under the native engine for 25 seconds and watched through the
+shared framebuffer. Buttons are chosen from what is on screen rather than from a fixed script: each
+new screen is watched first with nothing pressed, and a press only counts as a response if it beats
+what that screen does on its own. Buttons that can quit are tried last, and one that ends the title
+is remembered and never pressed again. A six second window is recorded frame by frame for the clip.
+Meanwhile the engine writes a structured report of everything it could not fully handle: syscalls
+it has no implementation for, symbols it failed to resolve, device nodes it does not model,
+hardware registers it ignored.
 
 The verdict comes from those two streams. Frame rate and frame count come off the framebuffer,
 the blocker lists come out of the report, and the screenshot is whichever captured frame scored
